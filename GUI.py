@@ -44,14 +44,10 @@ class GUI:
                 # Check if 2 seconds have elapsed since the last shift
                 current_time = pygame.time.get_ticks()
                 if current_time - last_shift_time >= 2000:  # 2000 milliseconds = 2 seconds
-                    self.game.board.rotateRowRight(7)
-                    print("rotated row 7 to the right")
-                    self.game.board.rotateRowLeft(3)
-                    print("rotated row 3 to the left")
-                    self.game.board.rotateColumnUp(2)
-                    print("rotated column 2 up")
-                    self.game.board.rotateColumnDown(8)
-                    print("rotated column 8 down")
+                    # self.game.board.rotateRowRight(7)
+                    # self.game.board.rotateRowLeft(3)
+                    # self.game.board.rotateColumnUp(2)
+                    # self.game.board.rotateColumnDown(8)
                     last_shift_time = current_time  # Update the last shift time
 
                 self.game.draw_board(self.screen, self.cell_size, self.cell_images)
