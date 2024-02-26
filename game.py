@@ -1,4 +1,4 @@
-from board import Board, LEFT, RIGHT
+from board import Board
 import pygame
 
 class Game:

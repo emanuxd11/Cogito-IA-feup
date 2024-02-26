@@ -2,16 +2,15 @@ import pygame
 import sys
 
 from game import Game
-from board import LEFT, RIGHT
 
 
 class GUI:
 
     cell_images = [
-        pygame.image.load("square.jpg"),
-        pygame.image.load("circle.jpg"),
-        pygame.image.load("arrow.jpg"),
-        pygame.image.load("border.jpg")
+        pygame.image.load("img/square.jpg"),
+        pygame.image.load("img/circle.jpg"),
+        pygame.image.load("img/arrow.jpg"),
+        pygame.image.load("img/border.jpg")
     ]
 
     def __init__(self, game, cell_size=70):
@@ -45,7 +44,14 @@ class GUI:
                 # Check if 2 seconds have elapsed since the last shift
                 current_time = pygame.time.get_ticks()
                 if current_time - last_shift_time >= 2000:  # 2000 milliseconds = 2 seconds
-                    self.game.board.rotateRow(5, LEFT)
+                    self.game.board.rotateRowRight(7)
+                    print("rotated row 7 to the right")
+                    self.game.board.rotateRowLeft(3)
+                    print("rotated row 3 to the left")
+                    self.game.board.rotateColumnUp(2)
+                    print("rotated column 2 up")
+                    self.game.board.rotateColumnDown(8)
+                    print("rotated column 8 down")
                     last_shift_time = current_time  # Update the last shift time
 
                 self.game.draw_board(self.screen, self.cell_size, self.cell_images)
