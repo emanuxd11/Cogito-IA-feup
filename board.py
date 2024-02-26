@@ -20,6 +20,8 @@ class Board:
                 list.append((x,y))
 
     def __str__(self):
+        board_str = ""
         for row in self.board:
-            print(row)
+            board_str += str(row) + "\n"
+        return board_str
 
