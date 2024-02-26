@@ -1,6 +1,9 @@
 import pygame
-from game import Game
 import sys
+
+from game import Game
+from board import LEFT, RIGHT
+
 
 class GUI:
 
@@ -23,24 +26,32 @@ class GUI:
         ]
 
     def run(self):
-        pygame.init()
+            pygame.init()
 
-        clock = pygame.time.Clock()
-        running = True
+            clock = pygame.time.Clock()
+            running = True
+            last_shift_time = pygame.time.get_ticks()  # Track the last time the board shifted
 
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    x, y = pygame.mouse.get_pos()
-                    row = y // self.cell_size - 1
-                    col = x // self.cell_size - 1
-                    self.game.toggle_cell(row, col)
+            while running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        x, y = pygame.mouse.get_pos()
+                        row = y // self.cell_size - 1
+                        col = x // self.cell_size - 1
+                        self.game.toggle_cell(row, col)
 
-            self.game.draw_board(self.screen, self.cell_size, self.cell_images)
-            pygame.display.flip()
-            clock.tick(10)
+                # Check if 2 seconds have elapsed since the last shift
+                current_time = pygame.time.get_ticks()
+                if current_time - last_shift_time >= 2000:  # 2000 milliseconds = 2 seconds
+                    self.game.board.rotateRow(5, LEFT)
+                    last_shift_time = current_time  # Update the last shift time
 
-        pygame.quit()
-        sys.exit()
+                self.game.draw_board(self.screen, self.cell_size, self.cell_images)
+                pygame.display.flip()
+
+                clock.tick(10)
+
+            pygame.quit()
+            sys.exit()

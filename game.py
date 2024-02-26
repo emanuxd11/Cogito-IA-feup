@@ -1,4 +1,4 @@
-from board import Board
+from board import Board, LEFT, RIGHT
 import pygame
 
 class Game:
@@ -35,9 +35,8 @@ class Game:
             rotated_arrow = pygame.transform.rotate(arrow, 180)  # Rotate the arrow by 180 degrees
             screen.blit(rotated_arrow, (row * cell_size, (self.board.getBoardSize() + 1) * cell_size))
 
-
-        
         for row in range(self.board.getBoardSize()):
             for col in range(self.board.getBoardSize()):
                 cell_image = images[1] if self.board.board[row][col] else images[0]
                 screen.blit(cell_image, ((col + 1) * cell_size, (row + 1) * cell_size))
+

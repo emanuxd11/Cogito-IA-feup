@@ -1,11 +1,13 @@
 import random
 
+RIGHT = "right"
+LEFT = "left"
+
 
 class Board:
 
     def __init__(self, board_size):
         self.board = [[False for _ in range(board_size)] for _ in range(board_size)]
-        
 
         list = []
         count = 0
@@ -21,6 +23,13 @@ class Board:
 
     def getBoardSize(self):
         return len(self.board)
+
+    # The default is shifting to the right
+    def rotateRow(self, row, direction=RIGHT):
+        if direction == RIGHT:
+            self.board[row] = self.board[row][-1:] + self.board[row][:-1]
+        elif direction == LEFT:
+            self.board[row] = self.board[row][1:] + self.board[row][:1]
 
     def __str__(self):
         board_str = ""
