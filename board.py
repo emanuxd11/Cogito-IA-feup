@@ -19,6 +19,9 @@ class Board:
                 count += 1
                 list.append((x,y))
 
+    def getBoardSize(self):
+        return len(self.board)
+
     def __str__(self):
         board_str = ""
         for row in self.board:

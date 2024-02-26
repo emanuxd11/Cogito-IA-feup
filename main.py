@@ -1,12 +1,10 @@
-import pygame
-import pygame_menu
-from board import Board
+from GUI import GUI
+from game import Game
 
 def main():
-
-    print("Game started")
-    board = Board(9)
-    print(board)
+    game_instance = Game(9)
+    gui_instance = GUI(game_instance)
+    gui_instance.run()
 
 if __name__ == "__main__":
     main()
