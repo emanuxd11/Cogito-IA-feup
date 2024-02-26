@@ -1,6 +1,8 @@
 # Regras do Jogo
 > Existem 12 regras de movimentação diferentes. Ao fim do nível 12, o jogo volta à regra inicial (em que cada movimento corresponde a apenas ao movimento realmente efetuado), mas aumenta a dificuldade alterando o objetivo da board.
+
 > Não se sabe ao certo quantos tabuleiros diferentes existem.
+
 > Em cima aparece um contador com o tempo do nível atual, o número do nível atual, o counter de moves para o nível atual e um número misterioso.
 
 ## Regras de Movimentação
