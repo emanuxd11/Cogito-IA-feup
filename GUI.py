@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 from game import Game
 
@@ -12,6 +13,9 @@ class GUI:
         pygame.image.load("img/arrow.jpg"),
         pygame.image.load("img/border.jpg")
     ]
+
+    audio_file = "cogito.mp3"
+    audio_path = os.path.join("audio/", audio_file)
 
     def __init__(self, game, cell_size=70):
         self.game = game
@@ -26,6 +30,10 @@ class GUI:
 
     def run(self):
             pygame.init()
+
+            pygame.mixer.music.load(GUI.audio_path)                                 
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(-1)
 
             clock = pygame.time.Clock()
             running = True
@@ -50,7 +58,7 @@ class GUI:
 
                 if (self.game.board.isWinningBoard):
                      print("Player won")
-                     break
+                     #break
 
             pygame.quit()
             sys.exit()
