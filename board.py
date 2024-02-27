@@ -5,6 +5,11 @@ class Board:
 
     def __init__(self, board_size):
         self.board = [[False for _ in range(board_size)] for _ in range(board_size)]
+        self.objective = [[False for _ in range(board_size)] for _ in range(board_size)]
+
+        for i in range(3, 6):
+             for j in range(3, 6):
+                self.objective[i][j] = True
 
         list = []
         count = 0
@@ -17,6 +22,7 @@ class Board:
                 self.board[x][y] = True
                 count += 1
                 list.append((x,y))
+
 
     def getBoardSize(self):
         return len(self.board)
@@ -42,6 +48,12 @@ class Board:
             previous = new_previous
         self.board[-1][col] = previous
 
+    def isWinningBoard(self):
+        for row in range(self.getBoardSize()):
+            for col in range(self.getBoardSize()):
+                if self.board[row][col] != self.objective[row][col]:
+                    return False
+        return True
 
     def __str__(self):
         board_str = ""

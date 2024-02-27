@@ -21,6 +21,7 @@ class Game:
             elif (row == 10):
                 if (1 <= col <= 10):
                     self.board.rotateColumnUp(col-1)
+        
 
 
 
