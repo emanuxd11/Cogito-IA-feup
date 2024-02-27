@@ -42,6 +42,7 @@ class Board:
             previous = new_previous
         self.board[-1][col] = previous
 
+
     def __str__(self):
         board_str = ""
         for row in self.board:

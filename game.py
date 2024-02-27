@@ -7,8 +7,23 @@ class Game:
         self.board = Board(board_size)
 
     def toggle_cell(self, row, col):
-        if ((col == 0 or col == 9) and (1 <= row <= 9)) or ((row == 0 or row == 9) and (1 <= col <= 9)):
-            print(f"Cell Clicked 2nd: ({row},{col})")
+        if (col == 0):
+            if (1 <= row <= 9):
+                self.board.rotateRowRight(row-1)
+        elif (col == 10):
+            if (1 <= row <= 9):
+                self.board.rotateRowLeft(row-1)
+
+        else:
+            if (row == 0):
+                if (1 <= col <= 10):
+                    self.board.rotateColumnDown(col-1)
+            elif (row == 10):
+                if (1 <= col <= 10):
+                    self.board.rotateColumnUp(col-1)
+
+
+
 
 
     def draw_board(self, screen, cell_size, images):
