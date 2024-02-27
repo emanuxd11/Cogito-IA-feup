@@ -55,7 +55,7 @@ class GUI:
                 clock.tick(10)
 
                 if (self.game.board.isWinningBoard()):
-                    print(f"You Beat Level n With {self.game.move_count} moves!")
+                    print(f"You Beat Level {self.game.level} With {self.game.move_count} moves!")
                     self.game.move_count = 0
 
                     win_music_path = "audio/win_music.mp3"
@@ -63,7 +63,10 @@ class GUI:
                     pygame.mixer.music.play()
                     while pygame.mixer.music.get_busy(): # wait for music to stop playing
                         pygame.time.Clock().tick(10)
-                    break # this is where you would advance to the next level
+
+                    self.game.level += 1
+                    print(f"you've advanced to level {self.game.level}")
+                    # break # this is where you would advance to the next level
 
             pygame.quit()
             sys.exit()

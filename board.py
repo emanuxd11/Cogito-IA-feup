@@ -23,7 +23,6 @@ class Board:
                 count += 1
                 list.append((x,y))
 
-
     def getBoardSize(self):
         return len(self.board)
 
