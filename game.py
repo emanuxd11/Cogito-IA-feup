@@ -2,39 +2,35 @@ from board import Board
 import pygame
 
 class Game:
-    
+
     def __init__(self, board_size):
         self.board = Board(board_size)
+        self.move_count = 0
+        self.level = 0
+        self.MOVEMENT_RULE_QNT = 12 # there are 12 distinct movement rules
 
     def toggle_cell(self, row, col):
         sound_path = "audio/arrow_click.mp3"
         arrow_sfx = pygame.mixer.Sound(sound_path)
         arrow_sfx.play()
 
-        if (col == 0):
-            if (1 <= row <= 9):
-                self.board.rotateRowRight(row-1)
-        elif (col == 10):
-            if (1 <= row <= 9):
-                self.board.rotateRowLeft(row-1)
-        else:
-            if (row == 0):
-                if (1 <= col <= 10):
-                    self.board.rotateColumnDown(col-1)
-            elif (row == 10):
-                if (1 <= col <= 10):
-                    self.board.rotateColumnUp(col-1)
-        
+        self.move_count += 1
+        print(f"move count {self.move_count}") # just for debug while there is no GUI indicator
+
+        if col == 0 and 1 <= row <= 9:
+            self.board.rotateRowRight(row - 1)
+        elif col == 10 and 1 <= row <= 9:
+            self.board.rotateRowLeft(row - 1)
+        elif row == 0 and 1 <= col <= 10:
+            self.board.rotateColumnDown(col - 1)
+        elif row == 10 and 1 <= col <= 10:
+            self.board.rotateColumnUp(col - 1)
+
     def draw_board(self, screen, cell_size, images):
-
         border = images[3]
-
         screen.blit(border, (0, 0))
-
         screen.blit(border, ((self.board.getBoardSize() + 1) * cell_size, (self.board.getBoardSize()+1) * cell_size))
-
         screen.blit(border, (0 * cell_size, (self.board.getBoardSize()+1) * cell_size))
-
         screen.blit(border, ((self.board.getBoardSize() + 1) * cell_size, 0))
 
         for row in range(1, self.board.getBoardSize() + 1):

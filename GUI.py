@@ -42,7 +42,7 @@ class GUI:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                    elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #only accept left clicks
                         x, y = pygame.mouse.get_pos()
                         row = y // self.cell_size
                         col = x // self.cell_size
@@ -55,13 +55,15 @@ class GUI:
                 clock.tick(10)
 
                 if (self.game.board.isWinningBoard()):
+                    print(f"You Beat Level n With {self.game.move_count} moves!")
+                    self.game.move_count = 0
+
                     win_music_path = "audio/win_music.mp3"
                     pygame.mixer.music.load(win_music_path)
                     pygame.mixer.music.play()
-                    print("You Won!!")
-                    while pygame.mixer.music.get_busy():
+                    while pygame.mixer.music.get_busy(): # wait for music to stop playing
                         pygame.time.Clock().tick(10)
-                    break
+                    break # this is where you would advance to the next level
 
             pygame.quit()
             sys.exit()
