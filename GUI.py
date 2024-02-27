@@ -55,7 +55,12 @@ class GUI:
                 clock.tick(10)
 
                 if (self.game.board.isWinningBoard()):
+                    win_music_path = "audio/win_music.mp3"
+                    pygame.mixer.music.load(win_music_path)
+                    pygame.mixer.music.play()
                     print("You Won!!")
+                    while pygame.mixer.music.get_busy():
+                        pygame.time.Clock().tick(10)
                     break
 
             pygame.quit()

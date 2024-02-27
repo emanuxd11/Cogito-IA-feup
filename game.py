@@ -7,13 +7,16 @@ class Game:
         self.board = Board(board_size)
 
     def toggle_cell(self, row, col):
+        sound_path = "audio/arrow_click.mp3"
+        arrow_sfx = pygame.mixer.Sound(sound_path)
+        arrow_sfx.play()
+
         if (col == 0):
             if (1 <= row <= 9):
                 self.board.rotateRowRight(row-1)
         elif (col == 10):
             if (1 <= row <= 9):
                 self.board.rotateRowLeft(row-1)
-
         else:
             if (row == 0):
                 if (1 <= col <= 10):
