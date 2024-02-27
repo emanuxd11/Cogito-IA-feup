@@ -37,8 +37,8 @@ class GUI:
                         running = False
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         x, y = pygame.mouse.get_pos()
-                        row = y // self.cell_size - 1
-                        col = x // self.cell_size - 1
+                        row = y // self.cell_size
+                        col = x // self.cell_size
                         self.game.toggle_cell(row, col)
 
                 # Check if 2 seconds have elapsed since the last shift

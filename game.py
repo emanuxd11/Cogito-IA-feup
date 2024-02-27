@@ -7,7 +7,9 @@ class Game:
         self.board = Board(board_size)
 
     def toggle_cell(self, row, col):
-        self.board.board[row][col] = not self.board.board[row][col]
+        if ((col == 0 or col == 9) and (1 <= row <= 9)) or ((row == 0 or row == 9) and (1 <= col <= 9)):
+            print(f"Cell Clicked 2nd: ({row},{col})")
+
 
     def draw_board(self, screen, cell_size, images):
 
