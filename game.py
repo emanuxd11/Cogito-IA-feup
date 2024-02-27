@@ -22,11 +22,6 @@ class Game:
                 if (1 <= col <= 10):
                     self.board.rotateColumnUp(col-1)
         
-
-
-
-
-
     def draw_board(self, screen, cell_size, images):
 
         border = images[3]

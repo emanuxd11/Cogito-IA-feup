@@ -29,7 +29,6 @@ class GUI:
 
             clock = pygame.time.Clock()
             running = True
-            last_shift_time = pygame.time.get_ticks()  # Track the last time the board shifted
 
             while running:
                 for event in pygame.event.get():
@@ -45,12 +44,11 @@ class GUI:
 
                 pygame.display.flip()
 
-
                 clock.tick(10)
 
-                if (self.game.board.isWinningBoard):
-                     print("Player won")
-                     break
+                if (self.game.board.isWinningBoard()):
+                    print("You Won!!")
+                    break
 
             pygame.quit()
             sys.exit()
