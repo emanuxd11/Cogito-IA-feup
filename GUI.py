@@ -1,8 +1,8 @@
 import pygame
 import sys
-import os
 
 from game import Game
+from sound import Sound 
 
 
 class GUI:
@@ -13,9 +13,6 @@ class GUI:
         pygame.image.load("img/arrow.jpg"),
         pygame.image.load("img/border.jpg")
     ]
-
-    audio_file = "cogito.mp3"
-    audio_path = os.path.join("audio/", audio_file)
 
     def __init__(self, game, cell_size=70):
         self.game = game
@@ -29,11 +26,7 @@ class GUI:
         ]
 
     def run(self):
-            pygame.init()
-
-            pygame.mixer.music.load(GUI.audio_path)                                 
-            pygame.mixer.music.set_volume(0.5)
-            pygame.mixer.music.play(-1)
+            Sound.playBackgroundTheme()
 
             clock = pygame.time.Clock()
             running = True
@@ -49,24 +42,20 @@ class GUI:
                         self.game.toggle_cell(row, col)
 
                 self.game.draw_board(self.screen, self.cell_size, self.cell_images)
-
                 pygame.display.flip()
-
                 clock.tick(10)
 
-                if (self.game.board.isWinningBoard()):
+                if self.game.board.isWinningBoard() and self.game.move_count > 0:
                     print(f"You Beat Level {self.game.level} With {self.game.move_count} moves!")
                     self.game.move_count = 0
 
-                    win_music_path = "audio/win_music.mp3"
-                    pygame.mixer.music.load(win_music_path)
-                    pygame.mixer.music.play()
-                    while pygame.mixer.music.get_busy(): # wait for music to stop playing
-                        pygame.time.Clock().tick(10)
+                    Sound.playWinMusic()
 
                     self.game.level += 1
+                    self.game.board.shuffle(self.game.shuffle_level)
+                    # presumably here you would also increment the shuffle level at some point but I haven't yet figured out how that works 
                     print(f"you've advanced to level {self.game.level}")
-                    # break # this is where you would advance to the next level
 
             pygame.quit()
             sys.exit()
+

@@ -1,10 +1,14 @@
 from board import Board
+from sound import Sound
 import pygame
+
 
 class Game:
 
     def __init__(self, board_size):
-        self.board = Board(board_size)
+        pygame.init()
+        self.shuffle_level = 30 # don't quite know how this evolves tbh
+        self.board = Board(board_size, self.shuffle_level)
         self.move_count = 0
         self.level = 1
         self.MOVEMENT_RULE_QNT = 12 # there are 12 distinct movement rules
@@ -56,10 +60,7 @@ class Game:
 
     def toggle_cell(self, row, col):
         if self.isArrowClick(row, col):
-            sound_path = "audio/arrow_click.mp3"
-            arrow_sfx = pygame.mixer.Sound(sound_path)
-            arrow_sfx.play()
-
+            Sound.playMoveSound()
             self.make_move(row, col)
 
     def make_move(self, row, col):
