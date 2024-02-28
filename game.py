@@ -79,7 +79,7 @@ class Game:
                 12: self.make_move_12,
         }
 
-        movement_rule_n = 8 #(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+        movement_rule_n = 9#(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
         move_set[movement_rule_n](row, col)
 
         self.move_count += 1
@@ -188,14 +188,20 @@ class Game:
             self.board.rotateRowRight(col - 1)
 
     def make_move_9(self, row, col):
-        if self.isLeftSideArrow(row, col):
+        if row == 5 or col == 5:
+            self.make_move_1(row, col)
+        elif self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
+            self.board.rotateRowRight(9 - row)
         elif self.isRightSideArrow(row, col):
             self.board.rotateRowLeft(row - 1)
+            self.board.rotateRowLeft(9 - row)
         elif self.isTopSideArrow(row, col):
             self.board.rotateColumnDown(col - 1)
+            self.board.rotateColumnDown(9 - col)
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
+            self.board.rotateColumnUp(9 - col)
 
     def make_move_10(self, row, col):
         if self.isLeftSideArrow(row, col):
