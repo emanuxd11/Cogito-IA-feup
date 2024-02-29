@@ -8,10 +8,10 @@ from sound import Sound
 class GUI:
 
     cell_images = [
-        pygame.image.load("img/square.jpg"),
-        pygame.image.load("img/circle.jpg"),
-        pygame.image.load("img/arrow.jpg"),
-        pygame.image.load("img/border.jpg")
+        pygame.image.load("../img/square.jpg"),
+        pygame.image.load("../img/circle.jpg"),
+        pygame.image.load("../img/arrow.jpg"),
+        pygame.image.load("../img/border.jpg")
     ]
 
     def __init__(self, game, cell_size=70):
