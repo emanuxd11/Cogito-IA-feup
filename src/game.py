@@ -79,7 +79,7 @@ class Game:
                 12: self.make_move_12,
         }
 
-        movement_rule_n = 9#(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+        movement_rule_n = 12#(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
         move_set[movement_rule_n](row, col)
 
         self.move_count += 1
@@ -187,6 +187,7 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateRowRight(col - 1)
 
+    #rule done
     def make_move_9(self, row, col):
         if row == 5 or col == 5:
             self.make_move_1(row, col)
@@ -203,6 +204,7 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(9 - col)
 
+
     def make_move_10(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -213,23 +215,43 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
 
+    #rule done
     def make_move_11(self, row, col):
-        if self.isLeftSideArrow(row, col):
-            self.board.rotateRowRight(row - 1)
-        elif self.isRightSideArrow(row, col):
-            self.board.rotateRowLeft(row - 1)
-        elif self.isTopSideArrow(row, col):
-            self.board.rotateColumnDown(col - 1)
-        elif self.isBottomSideArrow(row, col):
-            self.board.rotateColumnUp(col - 1)
+        if row == 9 or col == 9:
+            adj = 0 
+        else:
+            adj = row if (col == 0 or col == 10) else col
 
-    def make_move_12(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
+            self.board.rotateRowRight(adj)
         elif self.isRightSideArrow(row, col):
             self.board.rotateRowLeft(row - 1)
+            self.board.rotateRowLeft(adj)
         elif self.isTopSideArrow(row, col):
             self.board.rotateColumnDown(col - 1)
+            self.board.rotateColumnDown(adj)
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
+            self.board.rotateColumnUp(adj)
+
+    #rule done
+    def make_move_12(self, row, col):
+        if col == 1 or col == 2 or row == 1 or row == 2:
+            adj = 6 + row if (col == 0 or col == 10) else 6 + col
+        else:
+            adj = row - 3 if (col == 0 or col == 10) else col - 3
+
+        if self.isLeftSideArrow(row, col):
+            self.board.rotateRowRight(row - 1)
+            self.board.rotateRowRight(adj)
+        elif self.isRightSideArrow(row, col):
+            self.board.rotateRowLeft(row - 1)
+            self.board.rotateRowLeft(adj)
+        elif self.isTopSideArrow(row, col):
+            self.board.rotateColumnDown(col - 1)
+            self.board.rotateColumnDown(adj)
+        elif self.isBottomSideArrow(row, col):
+            self.board.rotateColumnUp(col - 1)
+            self.board.rotateColumnUp(adj)
     
