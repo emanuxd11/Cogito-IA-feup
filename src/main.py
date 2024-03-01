@@ -1,10 +1,17 @@
+import pygame
+import sys
+
 from GUI import GUI
-from game import Game
+
 
 def main():
-    game_instance = Game(9)
-    gui_instance = GUI(game_instance)
+    pygame.init()
+
+    gui_instance = GUI()
     gui_instance.run()
+
+    pygame.quit()
+    sys.exit()
 
 if __name__ == "__main__":
     main()

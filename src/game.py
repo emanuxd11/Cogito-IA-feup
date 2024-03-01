@@ -6,7 +6,6 @@ import pygame
 class Game:
 
     def __init__(self, board_size):
-        pygame.init()
         self.shuffle_level = 30 # don't quite know how this evolves tbh
         self.board = Board(board_size, self.shuffle_level)
         self.move_count = 0
@@ -79,7 +78,7 @@ class Game:
                 12: self.make_move_12,
         }
 
-        movement_rule_n = 12#(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+        movement_rule_n = 1#(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
         move_set[movement_rule_n](row, col)
 
         self.move_count += 1
