@@ -2,8 +2,6 @@ import pygame
 import sys
 
 from GUI import GUI
-
-
 def main():
     pygame.init()
 

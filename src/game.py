@@ -1,42 +1,19 @@
 from board import Board
 from sound import Sound
+
 import pygame
+import threading
 
 
 class Game:
 
     def __init__(self, board_size):
+        self.shuffle = True
         self.shuffle_level = 30 # don't quite know how this evolves tbh
-        self.board = Board(board_size, self.shuffle_level)
+        self.board = Board(board_size)
         self.move_count = 0
         self.level = 1
         self.MOVEMENT_RULE_QNT = 12 # there are 12 distinct movement rules
-
-    def draw_board(self, screen, cell_size, images):
-        border = images[3]
-        screen.blit(border, (0, 0))
-        screen.blit(border, ((self.board.getBoardSize() + 1) * cell_size, (self.board.getBoardSize()+1) * cell_size))
-        screen.blit(border, (0 * cell_size, (self.board.getBoardSize()+1) * cell_size))
-        screen.blit(border, ((self.board.getBoardSize() + 1) * cell_size, 0))
-
-        for row in range(1, self.board.getBoardSize() + 1):
-            arrow = images[2]
-            rotated_arrow = pygame.transform.rotate(arrow, 90)  # Rotate the arrow by 90 degrees
-            screen.blit(rotated_arrow, (0, row * cell_size))
-            
-            rotated_arrow = pygame.transform.rotate(arrow, 270)  # Rotate the arrow by 270 degrees
-            screen.blit(rotated_arrow, ((self.board.getBoardSize() + 1) * cell_size, row * cell_size))
-            
-            rotated_arrow = pygame.transform.rotate(arrow, 0)  # Rotate the arrow by 180 degrees
-            screen.blit(rotated_arrow, (row * cell_size, 0))
-            
-            rotated_arrow = pygame.transform.rotate(arrow, 180)  # Rotate the arrow by 180 degrees
-            screen.blit(rotated_arrow, (row * cell_size, (self.board.getBoardSize() + 1) * cell_size))
-
-        for row in range(self.board.getBoardSize()):
-            for col in range(self.board.getBoardSize()):
-                cell_image = images[1] if self.board.board[row][col] else images[0]
-                screen.blit(cell_image, ((col + 1) * cell_size, (row + 1) * cell_size))
 
     # utilitary functions
     def isLeftSideArrow(self, row, col):
@@ -62,6 +39,27 @@ class Game:
             Sound.playMoveSound()
             self.make_move(row, col)
 
+    def mt_board_shuffle(self):
+        def shuffle_caller():
+            self.board.shuffle(self.shuffle_level)
+        shuffle_thread = threading.Thread(target=shuffle_caller)
+        shuffle_thread.start()
+
+    def updateLogic(self):
+        if self.shuffle:
+            self.mt_board_shuffle()
+            self.shuffle = False
+
+        if self.board.isWinningBoard() and self.move_count > 0:
+            print(f"You beat level {self.level} with {self.move_count} moves!")
+            self.move_count = 0
+
+            Sound.playWinMusic()
+
+            self.level += 1
+            self.mt_board_shuffle()
+            print(f"you've advanced to level {self.level}")
+
     def make_move(self, row, col):
         move_set = {
                 1: self.make_move_1,
@@ -82,8 +80,7 @@ class Game:
         move_set[movement_rule_n](row, col)
 
         self.move_count += 1
-        print(f"move count {self.move_count}") # just for debug while there is no GUI indicator
-    
+
     # read README.md for information on how these rules work
 
     #rule done

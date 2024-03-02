@@ -30,6 +30,8 @@ class GUI:
 
         running = True
         while running:
+
+            self.game.updateLogic()
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -40,28 +42,13 @@ class GUI:
                     col = x // self.cell_size
                     self.game.toggle_cell(row, col)
 
-            # Render the game state
-            self.game.draw_board(self.screen, self.cell_size, self.cell_images)
+            # render game state
+            self.game.board.draw(self.screen, self.cell_size, self.cell_images)
             pygame.display.flip()
 
-            # Update game logic here without waiting for user input
-            self.update_game_logic()
+            print(f"Moves: {self.game.move_count} FPS: {round(self.clock.get_fps())}", end='\r', flush=True) # just for debug while there is no GUI indicator
+
 
             # Cap the frame rate to 60 fps
-            # print("rendered frame")
-            print(f"fps: {round(self.clock.get_fps())}", end='\r', flush=True)
             self.clock.tick(60)
-
-    def update_game_logic(self):
-        # Update game logic here
-        # For example, you can handle animations, AI moves, etc.
-        if self.game.board.isWinningBoard() and self.game.move_count > 0:
-            print(f"You beat level {self.game.level} with {self.game.move_count} moves!")
-            self.game.move_count = 0
-
-            Sound.playWinMusic()
-
-            self.game.level += 1
-            self.game.board.shuffle(self.game.shuffle_level)
-            print(f"you've advanced to level {self.game.level}")
 

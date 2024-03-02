@@ -6,7 +6,7 @@ from sound import Sound
 
 class Board:
 
-    def __init__(self, board_size, shuffle_level):
+    def __init__(self, board_size):
         self.board = [[False for _ in range(board_size)] for _ in range(board_size)]
         self.objective = [[False for _ in range(board_size)] for _ in range(board_size)]
 
@@ -15,7 +15,31 @@ class Board:
                 self.board[i][j] = True
                 self.objective[i][j] = True
 
-        self.shuffle(shuffle_level)
+    def draw(self, screen, cell_size, images):
+        border = images[3]
+        screen.blit(border, (0, 0))
+        screen.blit(border, ((self.getBoardSize() + 1) * cell_size, (self.getBoardSize()+1) * cell_size))
+        screen.blit(border, (0 * cell_size, (self.getBoardSize()+1) * cell_size))
+        screen.blit(border, ((self.getBoardSize() + 1) * cell_size, 0))
+
+        for row in range(1, self.getBoardSize() + 1):
+            arrow = images[2]
+            rotated_arrow = pygame.transform.rotate(arrow, 90)  # Rotate the arrow by 90 degrees
+            screen.blit(rotated_arrow, (0, row * cell_size))
+            
+            rotated_arrow = pygame.transform.rotate(arrow, 270)  # Rotate the arrow by 270 degrees
+            screen.blit(rotated_arrow, ((self.getBoardSize() + 1) * cell_size, row * cell_size))
+            
+            rotated_arrow = pygame.transform.rotate(arrow, 0)  # Rotate the arrow by 180 degrees
+            screen.blit(rotated_arrow, (row * cell_size, 0))
+            
+            rotated_arrow = pygame.transform.rotate(arrow, 180)  # Rotate the arrow by 180 degrees
+            screen.blit(rotated_arrow, (row * cell_size, (self.getBoardSize() + 1) * cell_size))
+
+        for row in range(self.getBoardSize()):
+            for col in range(self.getBoardSize()):
+                cell_image = images[1] if self.board[row][col] else images[0]
+                screen.blit(cell_image, ((col + 1) * cell_size, (row + 1) * cell_size))
 
     def getBoardSize(self):
         return len(self.board)
@@ -42,29 +66,20 @@ class Board:
             previous = new_previous
         self.board[-1][col] = previous
 
-    def shuffle(self, shuffle_level):
-        shuffle_delay = 100  # milliseconds delay between each shuffle step
-        shuffle_count = 0
-        pygame.time.set_timer(pygame.USEREVENT, shuffle_delay)
-
-        while shuffle_count < shuffle_level:
-            for event in pygame.event.get():
-                if event.type == pygame.USEREVENT:
-                    direction = random.randint(1, 4)
-                    place = random.randint(0, self.getBoardSize() - 1)
-                    if direction == 1:
-                        self.rotateRowLeft(place)
-                    elif direction == 2:
-                        self.rotateRowRight(place)
-                    elif direction == 3:
-                        self.rotateColumnUp(place)
-                    elif direction == 4:
-                        self.rotateColumnDown(place)
-                    Sound.playMoveSound()
-                    shuffle_count += 1
-            pygame.display.flip()
-
-        pygame.time.set_timer(pygame.USEREVENT, 0)  # Disable the timer
+    def shuffle(self, shuffle_level: int):
+        for _ in range(shuffle_level):
+            direction = random.randint(1, 4)
+            place = random.randint(0, self.getBoardSize() - 1)
+            if direction == 1:
+                self.rotateRowLeft(place)
+            elif direction == 2:
+                self.rotateRowRight(place)
+            elif direction == 3:
+                self.rotateColumnUp(place)
+            elif direction == 4:
+                self.rotateColumnDown(place)
+            Sound.playMoveSound()
+            pygame.time.delay(100)
 
     def isWinningBoard(self):
         for row in range(self.getBoardSize()):
