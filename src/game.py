@@ -40,6 +40,7 @@ class Game:
             self.make_move(row, col)
 
     def mt_board_shuffle(self):
+        # shuffles the board on a new thread, doesn't block rendering new frames
         def shuffle_caller():
             self.board.shuffle(self.shuffle_level)
         shuffle_thread = threading.Thread(target=shuffle_caller)
@@ -76,7 +77,7 @@ class Game:
                 12: self.make_move_12,
         }
 
-        movement_rule_n = 1#(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+        movement_rule_n = 3 # (self.level - 1) % self.MOVEMENT_RULE_QNT + 1
         move_set[movement_rule_n](row, col)
 
         self.move_count += 1
@@ -120,7 +121,7 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateRowRight(col - 1)
 
-
+    # rule requires different arrow layout
     def make_move_4(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -200,7 +201,7 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(9 - col)
 
-
+    # rule requires different arrow layout
     def make_move_10(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -250,4 +251,4 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(adj)
-    
+
