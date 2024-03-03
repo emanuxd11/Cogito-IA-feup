@@ -46,20 +46,26 @@ class Game:
         shuffle_thread = threading.Thread(target=shuffle_caller)
         shuffle_thread.start()
 
+    # when a level is won
+    def levelBeat(self):
+        print(f"You beat level {self.level} with {self.move_count} moves!")
+        self.move_count = 0
+        Sound.playWinMusic()
+
+    def goToNextLevel(self):
+        print(f"you've advanced to level {self.level}")
+        self.level += 1
+        self.mt_board_shuffle()
+        Sound.playBackgroundTheme()
+
     def updateLogic(self):
         if self.shuffle:
             self.mt_board_shuffle()
             self.shuffle = False
 
         if self.board.isWinningBoard() and self.move_count > 0:
-            print(f"You beat level {self.level} with {self.move_count} moves!")
-            self.move_count = 0
-
-            Sound.playWinMusic()
-
-            self.level += 1
-            self.mt_board_shuffle()
-            print(f"you've advanced to level {self.level}")
+            self.levelBeat()
+            self.goToNextLevel()
 
     def make_move(self, row, col):
         move_set = {
@@ -77,14 +83,14 @@ class Game:
                 12: self.make_move_12,
         }
 
-        movement_rule_n = 3 # (self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+        movement_rule_n =(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
         move_set[movement_rule_n](row, col)
 
         self.move_count += 1
 
     # read README.md for information on how these rules work
 
-    #rule done
+    # rule done
     def make_move_1(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -95,7 +101,7 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
 
-    #rule done
+    # rule done
     def make_move_2(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -110,7 +116,7 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(col - 1)
 
-    #rule done
+    # rule done
     def make_move_3(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateColumnUp(row - 1)
@@ -132,7 +138,7 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
 
-    #rule done
+    # rule done
     def make_move_5(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowLeft(row - 1)
@@ -143,7 +149,7 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnDown(col - 1)
 
-    #rule done
+    # rule done
     def make_move_6(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowLeft(9 - row )
@@ -154,7 +160,7 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnDown(9 - col)
 
-    #rule done
+    # rule done
     def make_move_7(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowLeft(9 - row )
@@ -169,7 +175,7 @@ class Game:
             self.board.rotateColumnDown(9 - col)
             self.board.rotateColumnUp(col - 1)
 
-    #rule done
+    # rule done
     def make_move_8(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -184,7 +190,7 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateRowRight(col - 1)
 
-    #rule done
+    # rule done
     def make_move_9(self, row, col):
         if row == 5 or col == 5:
             self.make_move_1(row, col)
@@ -212,7 +218,7 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
 
-    #rule done
+    # rule done
     def make_move_11(self, row, col):
         if row == 9 or col == 9:
             adj = 0 
@@ -232,7 +238,7 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(adj)
 
-    #rule done
+    # rule done
     def make_move_12(self, row, col):
         if col == 1 or col == 2 or row == 1 or row == 2:
             adj = 6 + row if (col == 0 or col == 10) else 6 + col
