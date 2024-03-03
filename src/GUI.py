@@ -33,33 +33,7 @@ class GUI:
 
         # Initialize font for rendering text
         pygame.font.init()
-        self.font = pygame.font.Font("../fonts/Orbitron-Regular.ttf", 16)  # Choose your font and size
-
-    def render_text(self, text, position):
-        rendered_text = self.font.render(text, True, (255, 255, 255))  # White color text
-        self.screen.blit(rendered_text, position)
-
-    def resizeImage(self, image, factor):
-        orig_width = image.get_width()
-        orig_height = image.get_height()
-
-        new_width = orig_width * factor
-        new_height = orig_height * factor
-
-        return pygame.transform.scale(image, (new_width, new_height))
-
-    def renderInfoCard(self):
-        # resize the board
-        board = self.resizeImage(GUI.info_board_img, 0.55)
-
-        # position the board itself
-        self.screen.blit(board, (230, 7))
-
-        level_text = f"Level: {self.game.level}"
-        self.render_text(level_text, (240, 20))  # Adjust position as needed
-
-        moves_text = f"Moves: {self.game.move_count}"
-        self.render_text(moves_text, (240, 30))  # Adjust position as needed
+        self.font = pygame.font.Font("../fonts/digital-7-mono.ttf", 34)  # Choose your font and size
 
     def run(self):
         Sound.playBackgroundTheme()
@@ -81,15 +55,54 @@ class GUI:
             # reset display to all black (prevents ghosting)
             self.screen.fill((0, 0, 0))
 
-            # render game state
+            # render board
             self.game.board.draw(self.screen, self.cell_size, self.cell_images, GUI.board_height_start)
 
-            self.renderInfoCard()
+            # render the info boar
+            self.renderInfoBoard()
 
             # apply changes
             pygame.display.flip()
 
             # print(f"Level: {self.game.level} Moves: {self.game.move_count} FPS: {round(self.clock.get_fps())}", end='\r', flush=True) # just for debug while there is no GUI indicator
             # Cap the frame rate to 60 fps
-            self.clock.tick(60)
+            self.clock.tick(999999)
+
+    # utils
+
+    def render_text(self, text, position, color=(255, 255, 255)):
+        rendered_text = self.font.render(text, True, color)
+        self.screen.blit(rendered_text, position)
+
+    def resizeImage(self, image, factor):
+        orig_width = image.get_width()
+        orig_height = image.get_height()
+
+        new_width = orig_width * factor
+        new_height = orig_height * factor
+
+        return pygame.transform.scale(image, (new_width, new_height))
+
+    def renderInfoBoard(self):
+        # resize the board
+        board = self.resizeImage(GUI.info_board_img, 0.55)
+
+        # position the board itself
+        self.screen.blit(board, (230, 7))
+
+        # current level timer
+        level_timer = self.game.getTimeString()
+        self.render_text(level_timer, (258, 15), pygame.Color("red"))
+
+        # current level
+        level_text = f"{self.game.level:03}"
+        self.render_text(level_text, (247, 47), pygame.Color("yellow"))
+
+        # current shuffle level
+        shuffle_qnt = f"{self.game.shuffle_level:03}"
+        self.render_text(shuffle_qnt, (341, 47), pygame.Color("yellow"))
+
+        # current number of moves
+        moves_text = f"{self.game.move_count:05}"
+        self.render_text(moves_text, (280, 78), pygame.Color("red"))
 

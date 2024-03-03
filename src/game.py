@@ -1,6 +1,7 @@
 from board import Board
 from sound import Sound
 
+import random
 import pygame
 import threading
 
@@ -8,11 +9,15 @@ import threading
 class Game:
 
     def __init__(self, board_size):
-        self.shuffle = True
+        self.level_active = False
+        self.is_shuffling = False
         self.shuffle_level = 30 # don't quite know how this evolves tbh
         self.board = Board(board_size)
         self.move_count = 0
         self.level = 1
+        self.is_timing = False
+        self.level_start_time = 0
+        self.level_beat_time = 0
         self.MOVEMENT_RULE_QNT = 12 # there are 12 distinct movement rules
 
     # utilitary functions
@@ -35,6 +40,8 @@ class Game:
                 self.isBottomSideArrow(row, col)
 
     def toggle_cell(self, row, col):
+        if not self.level_active: # don't allow making moves before the level has started
+            return
         if self.isArrowClick(row, col):
             Sound.playMoveSound()
             self.make_move(row, col)
@@ -42,30 +49,76 @@ class Game:
     def mt_board_shuffle(self):
         # shuffles the board on a new thread, doesn't block rendering new frames
         def shuffle_caller():
-            self.board.shuffle(self.shuffle_level)
+            self.shuffle_board()
         shuffle_thread = threading.Thread(target=shuffle_caller)
         shuffle_thread.start()
 
+    def currentLevelTime(self):
+        return pygame.time.get_ticks() - self.level_start_time
+
+    def getTimeString(self):
+        if not self.is_timing:
+            return "00:00:00"
+
+        total_seconds = self.currentLevelTime() // 1000 if self.is_timing else self.level_beat_time
+
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+    # starts a new level
+    def startLevel(self):
+        Sound.playBackgroundTheme()
+        self.mt_board_shuffle()
+
     # when a level is won
-    def levelBeat(self):
-        print(f"You beat level {self.level} with {self.move_count} moves!")
+    def endLevel(self):
+        self.level_active = False
+        self.is_timing = False
+        self.level_beat_time = self.currentLevelTime()
         self.move_count = 0
+        self.level += 1
         Sound.playWinMusic()
 
-    def goToNextLevel(self):
-        print(f"you've advanced to level {self.level}")
-        self.level += 1
-        self.mt_board_shuffle()
-        Sound.playBackgroundTheme()
+    def startTiming(self):
+        self.level_start_time = pygame.time.get_ticks()
+        self.is_timing = True
 
     def updateLogic(self):
-        if self.shuffle:
-            self.mt_board_shuffle()
-            self.shuffle = False
+        if not self.level_active: # start level
+            self.startLevel()
 
-        if self.board.isWinningBoard() and self.move_count > 0:
-            self.levelBeat()
-            self.goToNextLevel()
+        if not self.is_timing and self.level_active:
+            self.startTiming()
+
+        if self.board.isWinningBoard() and self.level_active:
+            self.endLevel()
+            self.startLevel()
+
+    def shuffle_board(self):
+        if self.is_shuffling:
+            return
+
+        self.is_shuffling = True # to block the user from moving before it's done and the timer from timing too soon
+
+        for _ in range(self.shuffle_level):
+            direction = random.randint(1, 4)
+            place = random.randint(0, self.board.getBoardSize() - 1)
+            if direction == 1:
+                self.board.rotateRowLeft(place)
+            elif direction == 2:
+                self.board.rotateRowRight(place)
+            elif direction == 3:
+                self.board.rotateColumnUp(place)
+            elif direction == 4:
+                self.board.rotateColumnDown(place)
+            Sound.playMoveSound()
+            pygame.time.delay(100)
+
+        self.is_shuffling = False
+        self.level_active = True
 
     def make_move(self, row, col):
         move_set = {
