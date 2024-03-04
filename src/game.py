@@ -45,6 +45,7 @@ class Game:
         if self.isArrowClick(row, col):
             Sound.playMoveSound()
             self.make_move(row, col)
+            self.move_count += 1
 
     def mt_board_shuffle(self):
         # shuffles the board on a new thread, doesn't block rendering new frames
@@ -102,18 +103,17 @@ class Game:
             return
 
         self.is_shuffling = True # to block the user from moving before it's done and the timer from timing too soon
-
         for _ in range(self.shuffle_level):
             direction = random.randint(1, 4)
-            place = random.randint(0, self.board.getBoardSize() - 1)
+            index = random.randint(0, self.board.getBoardSize() - 1)
             if direction == 1:
-                self.board.rotateRowLeft(place)
+                self.make_move(0, index)
             elif direction == 2:
-                self.board.rotateRowRight(place)
+                self.make_move(10, index)
             elif direction == 3:
-                self.board.rotateColumnUp(place)
+                self.make_move(index, 0)
             elif direction == 4:
-                self.board.rotateColumnDown(place)
+                self.make_move(index, 10)
             Sound.playMoveSound()
             pygame.time.delay(100)
 
@@ -136,10 +136,8 @@ class Game:
                 12: self.make_move_12,
         }
 
-        movement_rule_n =(self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+        movement_rule_n = (self.level - 1) % self.MOVEMENT_RULE_QNT + 1
         move_set[movement_rule_n](row, col)
-
-        self.move_count += 1
 
     # read README.md for information on how these rules work
 
