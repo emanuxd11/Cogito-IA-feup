@@ -136,7 +136,7 @@ class GUI:
 
         cell_size = int(self.cell_size * self.objective_scale_factor)
 
-        board_surface = pygame.Surface((cell_size * board_size, cell_size * board_size))
+        board_surface = pygame.Surface((cell_size * board_size, cell_size * board_size)).convert_alpha()
 
         for row in range(board_size):
             for col in range(board_size):
@@ -147,7 +147,7 @@ class GUI:
 
     def renderInfoBoard(self):
         # Create a surface for the info panel
-        info_panel_surface = pygame.Surface(self.info_board.get_size())
+        info_panel_surface = pygame.Surface(self.info_board.get_size()).convert_alpha()
 
         # Clear the info panel surface
         info_panel_surface.fill((0, 0, 0))
