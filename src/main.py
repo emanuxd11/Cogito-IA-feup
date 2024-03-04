@@ -2,9 +2,9 @@ import pygame
 import sys
 
 from game import Game
-
-
 from GUI import GUI
+
+
 def main():
     pygame.init()
     
