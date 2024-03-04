@@ -1,6 +1,3 @@
-import pygame
-
-
 class Board:
 
     def __init__(self, board_size):
@@ -11,32 +8,6 @@ class Board:
              for j in range(3, 6):
                 self.board[i][j] = True
                 self.objective[i][j] = True
-
-    def draw(self, screen, cell_size, images, start_height=0):
-        border = images[3]
-        screen.blit(border, (0, 0 + start_height))  # Adjust the y coordinate for the top border
-        screen.blit(border, ((self.getBoardSize() + 1) * cell_size, (self.getBoardSize()+1) * cell_size + start_height))  # Adjust the y coordinate for the right border
-        screen.blit(border, (0 * cell_size, (self.getBoardSize()+1) * cell_size + start_height))  # Adjust the y coordinate for the bottom border
-        screen.blit(border, ((self.getBoardSize() + 1) * cell_size, 0 + start_height))  # Adjust the y coordinate for the right border
-
-        for row in range(1, self.getBoardSize() + 1):
-            arrow = images[2]
-            rotated_arrow = pygame.transform.rotate(arrow, 90)  # Rotate the arrow by 90 degrees
-            screen.blit(rotated_arrow, (0, row * cell_size + start_height))  # Adjust the y coordinate for the arrow
-            
-            rotated_arrow = pygame.transform.rotate(arrow, 270)  # Rotate the arrow by 270 degrees
-            screen.blit(rotated_arrow, ((self.getBoardSize() + 1) * cell_size, row * cell_size + start_height))  # Adjust the y coordinate for the arrow
-            
-            rotated_arrow = pygame.transform.rotate(arrow, 0)  # Rotate the arrow by 180 degrees
-            screen.blit(rotated_arrow, (row * cell_size, 0 + start_height))  # Adjust the y coordinate for the arrow
-            
-            rotated_arrow = pygame.transform.rotate(arrow, 180)  # Rotate the arrow by 180 degrees
-            screen.blit(rotated_arrow, (row * cell_size, (self.getBoardSize() + 1) * cell_size + start_height))  # Adjust the y coordinate for the arrow
-
-        for row in range(self.getBoardSize()):
-            for col in range(self.getBoardSize()):
-                cell_image = images[1] if self.board[row][col] else images[0]
-                screen.blit(cell_image, ((col + 1) * cell_size, (row + 1) * cell_size + start_height))  # Adjust the y coordinate for the cell
 
     def getBoardSize(self):
         return len(self.board)
