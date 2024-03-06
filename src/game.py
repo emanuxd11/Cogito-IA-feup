@@ -14,7 +14,7 @@ class Game:
         self.shuffle_level = 30 # don't quite know how this evolves tbh
         self.board = Board(board_size)
         self.move_count = 0
-        self.level = 1
+        self.level = 4
         self.is_timing = False
         self.level_start_time = 0
         self.level_beat_time = 0
@@ -39,6 +39,9 @@ class Game:
         return row == 10 and 1 <= col <= 9
 
     def isArrowClick(self, row, col):
+        if self.requires2ndLayout() and not self.checkArrow2ndLayout(row, col):
+            return False
+
         return self.isLeftSideArrow(row, col) or \
                 self.isRightSideArrow(row, col) or \
                 self.isTopSideArrow(row, col) or \
@@ -147,9 +150,21 @@ class Game:
         movement_rule_n = self.getMovementRule()
         move_set[movement_rule_n](row, col)
 
+    def requires2ndLayout(self):
+        return self.getMovementRule() in self.secondary_layout_mov_rules
+
+    def checkArrow2ndLayout(self, row, col):
+        if col in (0, 10) and \
+            self.secondary_arrow_layout['col'][row] is False:
+            return False 
+        if row in (0, 10) and \
+            self.secondary_arrow_layout['row'][col] is False:
+            return False
+        return True
+
+
     # read README.md for information on how these rules work
 
-    # rule done
     def make_move_1(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -160,7 +175,6 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
 
-    # rule done
     def make_move_2(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -175,7 +189,6 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(col - 1)
 
-    # rule done
     def make_move_3(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateColumnUp(row - 1)
@@ -186,25 +199,10 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateRowRight(col - 1)
 
-    # rule requires different arrow layout
     def make_move_4(self, row, col):
-        if col in (0, 10) and \
-            self.secondary_arrow_layout['col'][row] is False:
-            return
-        if row in (0, 10) and \
-            self.secondary_arrow_layout['row'][col] is False:
-            return
+        if self.checkArrow2ndLayout(row, col):
+            self.make_move_1(row, col)
 
-        if self.isLeftSideArrow(row, col):
-            self.board.rotateRowRight(row - 1)
-        elif self.isRightSideArrow(row, col):
-            self.board.rotateRowLeft(row - 1)
-        elif self.isTopSideArrow(row, col):
-            self.board.rotateColumnDown(col - 1)
-        elif self.isBottomSideArrow(row, col):
-            self.board.rotateColumnUp(col - 1)
-
-    # rule done
     def make_move_5(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowLeft(row - 1)
@@ -215,7 +213,6 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnDown(col - 1)
 
-    # rule done
     def make_move_6(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowLeft(9 - row )
@@ -226,7 +223,6 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnDown(9 - col)
 
-    # rule done
     def make_move_7(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowLeft(9 - row )
@@ -241,7 +237,6 @@ class Game:
             self.board.rotateColumnDown(9 - col)
             self.board.rotateColumnUp(col - 1)
 
-    # rule done
     def make_move_8(self, row, col):
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
@@ -256,7 +251,6 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateRowRight(col - 1)
 
-    # rule done
     def make_move_9(self, row, col):
         if row == 5 or col == 5:
             self.make_move_1(row, col)
@@ -273,18 +267,10 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(9 - col)
 
-    # rule requires different arrow layout
     def make_move_10(self, row, col):
-        if self.isLeftSideArrow(row, col):
-            self.board.rotateRowRight(row - 1)
-        elif self.isRightSideArrow(row, col):
-            self.board.rotateRowLeft(row - 1)
-        elif self.isTopSideArrow(row, col):
-            self.board.rotateColumnDown(col - 1)
-        elif self.isBottomSideArrow(row, col):
-            self.board.rotateColumnUp(col - 1)
+        if self.checkArrow2ndLayout(row, col):
+            self.make_move_8(row, col)
 
-    # rule done
     def make_move_11(self, row, col):
         if row == 9 or col == 9:
             adj = 0 
@@ -304,7 +290,6 @@ class Game:
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(adj)
 
-    # rule done
     def make_move_12(self, row, col):
         if col == 1 or col == 2 or row == 1 or row == 2:
             adj = 6 + row if (col == 0 or col == 10) else 6 + col
