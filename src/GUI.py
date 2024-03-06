@@ -1,6 +1,7 @@
 import pygame
 
-from sound import Sound 
+from sound import Sound
+from menu import Menu
 
 
 class GUI:
@@ -54,8 +55,46 @@ class GUI:
         # cap fps
         self.fps = 60
 
+    def show_menu(self, menu_items):
+        menu = Menu(menu_items)
+
+        menu_running = True
+        while menu_running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            # Handle menu events
+            result = menu.handle_event(event)
+            if result:
+                if result == "Human Mode":
+                    return
+                elif result == "Exit":
+                    pygame.quit()
+                    sys.exit()
+
+            # Reset display to all black
+            self.screen.fill((0, 0, 0))
+
+            self.screen.blit(pygame.transform.scale(menu.background_image, (self.width, self.height)), (0, 0))
+
+            # Render menu
+            menu.draw(self.screen, self.width/2, self.height/2 +150)
+
+            # Apply changes
+            pygame.display.flip()
+
+            # Cap the frame rate
+            self.clock.tick(self.fps)
+
+
     def run(self):
         Sound.playBackgroundTheme()
+
+        # Show the menu before starting the game
+        menu_items = ["Human Mode", "Computer Mode", "Exit"]
+        self.show_menu(menu_items)
 
         running = True
         while running:
