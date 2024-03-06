@@ -14,11 +14,16 @@ class Game:
         self.shuffle_level = 30 # don't quite know how this evolves tbh
         self.board = Board(board_size)
         self.move_count = 0
-        self.level = 1
+        self.level = 4
         self.is_timing = False
         self.level_start_time = 0
         self.level_beat_time = 0
         self.MOVEMENT_RULE_QNT = 12 # there are 12 distinct movement rules
+        self.secondary_arrow_layout = {
+            "row": [False, True, True, False, True, True, True, False, True, True, False],
+            "col": [False, True, False, False, True, True, True, False, True, True, False]
+        }
+        self.secondary_layout_mov_rules = (4, 10)
 
     # utilitary functions
     def isLeftSideArrow(self, row, col):
@@ -120,6 +125,9 @@ class Game:
         self.is_shuffling = False
         self.level_active = True
 
+    def getMovementRule(self):
+        return (self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+
     def make_move(self, row, col):
         move_set = {
                 1: self.make_move_1,
@@ -136,7 +144,7 @@ class Game:
                 12: self.make_move_12,
         }
 
-        movement_rule_n = (self.level - 1) % self.MOVEMENT_RULE_QNT + 1
+        movement_rule_n = self.getMovementRule()
         move_set[movement_rule_n](row, col)
 
     # read README.md for information on how these rules work
@@ -180,6 +188,13 @@ class Game:
 
     # rule requires different arrow layout
     def make_move_4(self, row, col):
+        if col in (0, 10) and \
+            self.secondary_arrow_layout['col'][row] is False:
+            return
+        if row in (0, 10) and \
+            self.secondary_arrow_layout['row'][col] is False:
+            return
+
         if self.isLeftSideArrow(row, col):
             self.board.rotateRowRight(row - 1)
         elif self.isRightSideArrow(row, col):

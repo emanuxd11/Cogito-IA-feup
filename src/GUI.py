@@ -151,16 +151,33 @@ class GUI:
         screen = self.screen
         cell_size = self.cell_size
 
-        screen.blit(border, (0 + left_gap, 0 + start_height))
-        screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
-        screen.blit(border, (0 * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
-        screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, 0 + start_height))
+        # screen.blit(border, (0 + left_gap, 0 + start_height))
+        # screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
+        # screen.blit(border, (0 * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
+        # screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, 0 + start_height))
 
-        for row in range(1, self.game.board.getBoardSize() + 1):
-            screen.blit(self.arrow_right, (0 + left_gap, row * cell_size + start_height))
-            screen.blit(self.arrow_left, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, row * cell_size + start_height))
-            screen.blit(self.arrow_down, (row * cell_size + left_gap, 0 + start_height))
-            screen.blit(self.arrow_up, (row * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
+        if self.game.getMovementRule() in self.game.secondary_layout_mov_rules:
+            for i, has_arrow in enumerate(self.game.secondary_arrow_layout['col']):
+                if has_arrow:
+                    screen.blit(self.arrow_right, (0 + left_gap, (i) * cell_size + start_height))
+                    screen.blit(self.arrow_left, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, (i) * cell_size + start_height))
+                else:
+                    screen.blit(border, (0 + left_gap, (i) * cell_size + start_height))
+                    screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, (i) * cell_size + start_height))
+
+            for i, has_arrow in enumerate(self.game.secondary_arrow_layout['row']):
+                if has_arrow:
+                    screen.blit(self.arrow_down, ((i) * cell_size + left_gap, 0 + start_height))
+                    screen.blit(self.arrow_up, ((i) * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
+                else:
+                    screen.blit(border, ((i) * cell_size + left_gap, 0 + start_height))
+                    screen.blit(border, ((i) * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
+        else:
+            for row in range(1, self.game.board.getBoardSize() + 1):
+                screen.blit(self.arrow_right, (0 + left_gap, row * cell_size + start_height))
+                screen.blit(self.arrow_left, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, row * cell_size + start_height))
+                screen.blit(self.arrow_down, (row * cell_size + left_gap, 0 + start_height))
+                screen.blit(self.arrow_up, (row * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
 
         for row in range(self.game.board.getBoardSize()):
             for col in range(self.game.board.getBoardSize()):
