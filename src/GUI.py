@@ -57,46 +57,13 @@ class GUI:
         # cap fps
         self.fps = 60
 
-    def show_menu(self, menu_items):
-        menu = Menu(menu_items)
-
-        menu_running = True
-        while menu_running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-            # Handle menu events
-            result = menu.handle_event(event)
-            if result:
-                if result == "Human Mode":
-                    return
-                elif result == "Exit":
-                    pygame.quit()
-                    sys.exit()
-
-            # Reset display to all black
-            self.screen.fill((0, 0, 0))
-
-            self.screen.blit(pygame.transform.scale(menu.background_image, (self.width, self.height)), (0, 0))
-
-            # Render menu
-            menu.draw(self.screen, self.width/2, self.height/2 +150)
-
-            # Apply changes
-            pygame.display.flip()
-
-            # Cap the frame rate
-            self.clock.tick(self.fps)
-
 
     def run(self):
         Sound.playBackgroundTheme()
 
         # Show the menu before starting the game
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
-        self.show_menu(menu_items)
+        self.drawMenu(menu_items)
 
         running = True
         while running:
@@ -144,17 +111,36 @@ class GUI:
 
         return pygame.transform.scale(image, (new_width, new_height))
 
+    def drawMenu(self, menu_items):
+        menu = Menu(menu_items)
+
+        menu_running = True
+        while menu_running:
+            event = pygame.event.wait()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                else:
+                    result = menu.handle_event(event)
+                    if result == "Human Mode":
+                        return
+                    elif result == "Exit":
+                        pygame.quit()
+
+            self.screen.fill((0, 0, 0))
+            self.screen.blit(pygame.transform.scale(menu.background_image, (self.width, self.height)), (0, 0))
+            menu.draw(self.screen, self.width/2, self.height/2 + 150)
+            pygame.display.flip()
+
     def drawBoard(self):
         start_height = self.board_top_margin
         left_gap = self.board_left_margin
         border = self.cell_images[3]
         screen = self.screen
         cell_size = self.cell_size
-
-        # screen.blit(border, (0 + left_gap, 0 + start_height))
-        # screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
-        # screen.blit(border, (0 * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
-        # screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, 0 + start_height))
 
         if self.game.getMovementRule() in self.game.secondary_layout_mov_rules:
             for i, has_arrow in enumerate(self.game.secondary_arrow_layout['col']):
@@ -173,6 +159,11 @@ class GUI:
                     screen.blit(border, ((i) * cell_size + left_gap, 0 + start_height))
                     screen.blit(border, ((i) * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
         else:
+            screen.blit(border, (0 + left_gap, 0 + start_height))
+            screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
+            screen.blit(border, (0 * cell_size + left_gap, (self.game.board.getBoardSize() + 1) * cell_size + start_height))
+            screen.blit(border, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, 0 + start_height))
+
             for row in range(1, self.game.board.getBoardSize() + 1):
                 screen.blit(self.arrow_right, (0 + left_gap, row * cell_size + start_height))
                 screen.blit(self.arrow_left, ((self.game.board.getBoardSize() + 1) * cell_size + left_gap, row * cell_size + start_height))

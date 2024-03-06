@@ -14,7 +14,7 @@ class Game:
         self.shuffle_level = 30 # don't quite know how this evolves tbh
         self.board = Board(board_size)
         self.move_count = 0
-        self.level = 4
+        self.level = 1
         self.is_timing = False
         self.level_start_time = 0
         self.level_beat_time = 0
