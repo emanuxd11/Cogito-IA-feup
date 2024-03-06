@@ -26,6 +26,8 @@ class GUI:
             pygame.image.load("../img/arrow.jpg").convert(),
             pygame.image.load("../img/border.jpg").convert()
         ]
+
+        pygame.display.set_icon(pygame.image.load("../img/icon.png").convert())
         self.info_board_img = pygame.image.load("../img/info.jpg").convert()
         self.background_img = pygame.image.load("../img/background.jpg").convert()
 
