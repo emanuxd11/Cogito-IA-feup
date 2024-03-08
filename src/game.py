@@ -12,7 +12,7 @@ class Game:
     def __init__(self, board_size):
         self.level_active = False
         self.is_shuffling = False
-        self.shuffle_level = 0 # don't quite know how this evolves tbh
+        self.shuffle_level = 30 # don't quite know how this evolves tbh
         self.board = Board(board_size)
         self.move_count = 0
         self.level = 1
