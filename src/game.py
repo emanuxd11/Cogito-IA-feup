@@ -1,5 +1,6 @@
 from board import Board
 from sound import Sound
+from GUI import GUI
 
 import random
 import pygame
@@ -11,10 +12,10 @@ class Game:
     def __init__(self, board_size):
         self.level_active = False
         self.is_shuffling = False
-        self.shuffle_level = 30 # don't quite know how this evolves tbh
+        self.shuffle_level = 0 # don't quite know how this evolves tbh
         self.board = Board(board_size)
         self.move_count = 0
-        self.level = 4
+        self.level = 1
         self.is_timing = False
         self.level_start_time = 0
         self.level_beat_time = 0
@@ -24,6 +25,9 @@ class Game:
             "col": [False, True, False, False, True, True, True, False, True, True, False]
         }
         self.secondary_layout_mov_rules = (4, 10)
+
+    def setGUI(self, gui: GUI):
+        self.gui = gui
 
     # utilitary functions
     def isLeftSideArrow(self, row, col):
@@ -84,6 +88,7 @@ class Game:
 
     # when a level is won
     def endLevel(self):
+        self.gui.showWinMessage()
         self.level_active = False
         self.is_timing = False
         self.level_beat_time = self.currentLevelTime()

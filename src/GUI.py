@@ -8,6 +8,8 @@ class GUI:
 
     def __init__(self, game, cell_size=65):
         self.game = game
+        # set the GUI element of Game
+        self.game.setGUI(self)
 
         self.board_top_margin = 130
         self.board_right_margin = 600
@@ -30,8 +32,7 @@ class GUI:
         pygame.display.set_icon(pygame.image.load("../img/icon.png").convert())
         self.info_board_img = pygame.image.load("../img/info.jpg").convert()
         self.background_img = pygame.image.load("../img/background.jpg").convert()
-
-        self.info_screen_font = "../fonts/digital-7-mono.ttf"
+        self.win_box_img = pygame.image.load("../img/win_box.png").convert()
 
         # perform transformations on images in the beginning to save processing time in the rendering of each frame
         self.cell_images = [
@@ -41,6 +42,7 @@ class GUI:
         self.objective_filled_cell = self.resizeImage(self.cell_images[1], self.objective_scale_factor)
         self.objective_empty_cell = self.resizeImage(self.cell_images[0], self.objective_scale_factor)
         self.info_board = self.resizeImage(self.info_board_img, 0.55)
+        self.win_box = self.resizeImage(self.win_box_img, 0.35)
         self.background_img = pygame.transform.scale(self.background_img, (self.width, self.height))
         self.arrow_right = pygame.transform.rotate(self.cell_images[2], 90)
         self.arrow_left = pygame.transform.rotate(self.cell_images[2], 270)
@@ -50,15 +52,16 @@ class GUI:
         # initialize clock
         self.clock = pygame.time.Clock()
 
-        # Initialize font for rendering text
+        # Initialize fonts for rendering text
         pygame.font.init()
-        self.font = pygame.font.Font(self.info_screen_font, 34) # should add other fonts and this would be different then
+        self.info_board_font = pygame.font.Font("../fonts/digital-7-mono.ttf", 34)
+        self.win_screen_font = pygame.font.Font("../fonts/PressStart2P-Regular.ttf", 18)
 
         # cap fps
         self.fps = 60
 
-
     def run(self):
+
         Sound.playBackgroundTheme()
 
         # Show the menu before starting the game
@@ -99,7 +102,7 @@ class GUI:
             self.clock.tick(self.fps)
 
     def render_text(self, text, position, color=(255, 255, 255)):
-        rendered_text = self.font.render(text, True, color)
+        rendered_text = self.info_board_font.render(text, True, color)
         self.screen.blit(rendered_text, position)
 
     def resizeImage(self, image, factor):
@@ -206,22 +209,22 @@ class GUI:
 
         # Current level timer
         level_timer_text = self.game.getTimeString()
-        level_timer_surface = self.font.render(level_timer_text, True, pygame.Color("red"))
+        level_timer_surface = self.info_board_font.render(level_timer_text, True, pygame.Color("red"))
         info_panel_surface.blit(level_timer_surface, (27, 10))
 
         # Current level
         level_text = f"{self.game.level:03}"
-        level_surface = self.font.render(level_text, True, pygame.Color("yellow"))
+        level_surface = self.info_board_font.render(level_text, True, pygame.Color("yellow"))
         info_panel_surface.blit(level_surface, (15, 40))
 
         # Current shuffle level
         shuffle_qnt_text = f"{self.game.shuffle_level:03}"
-        shuffle_qnt_surface = self.font.render(shuffle_qnt_text, True, pygame.Color("yellow"))
+        shuffle_qnt_surface = self.info_board_font.render(shuffle_qnt_text, True, pygame.Color("yellow"))
         info_panel_surface.blit(shuffle_qnt_surface, (115, 40))
 
         # Current number of moves
         moves_text = f"{self.game.move_count:05}"
-        moves_surface = self.font.render(moves_text, True, pygame.Color("red"))
+        moves_surface = self.info_board_font.render(moves_text, True, pygame.Color("red"))
         info_panel_surface.blit(moves_surface, (47, 70))
 
         # Position the info panel on the screen
@@ -230,4 +233,24 @@ class GUI:
 
         # Blit the info panel surface onto the main display
         self.screen.blit(info_panel_surface, (info_panel_x, info_panel_y))
+
+    def showWinMessage(self):
+        width, height = self.win_box.get_size()
+
+        # Create a surface for the message
+        win_msg_surface = pygame.Surface((width, height)).convert_alpha()
+        win_msg_surface.blit(self.win_box, (0, 0))
+
+        # Current shuffle level
+        win_text = f"You beat level {self.game.level} in {self.game.move_count} moves!"
+        win_text_surface = self.win_screen_font.render(win_text, True, pygame.Color("black"))
+        txt_width, txt_height = win_text_surface.get_size()
+        win_msg_surface.blit(win_text_surface, (width // 2 - txt_width // 2, height // 2 - txt_height // 2))
+
+        scr_width, scr_height = self.screen.get_size()
+
+        # Blit the info panel surface onto the main display
+        self.screen.blit(win_msg_surface, (scr_width // 2 - width // 2, scr_height // 2- height // 2))
+
+        pygame.display.flip()
 

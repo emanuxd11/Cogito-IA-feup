@@ -12,7 +12,7 @@ class Menu:
             color = (255, 0, 0) if i == self.selected_index else (255, 255, 255)
             text_surface = self.font.render(item, True, color)
             if not centered:
-                screen.blit(text_surface, (x- (len(self.items)) * 60 / 2, y + i * 60))
+                screen.blit(text_surface, (x - (len(self.items)) * 60 / 2, y + i * 60))
             else:
                 left_gap, _ = text_surface.get_size()
                 screen_width, _ = screen.get_size()
