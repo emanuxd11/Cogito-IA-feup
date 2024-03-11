@@ -2,6 +2,7 @@ import pygame
 
 from sound import Sound
 from menu import Menu
+from bot import Bot, BotMode, RandomMode
 
 
 class GUI:
@@ -66,7 +67,12 @@ class GUI:
 
         # Show the menu before starting the game
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
-        self.drawMenu(menu_items)
+        mode = self.drawMenu(menu_items)
+        if mode == "Computer Mode":
+            bot = Bot(RandomMode())
+            self.game.setComputerMode()
+        elif mode == "Exit":
+            pygame.quit()
 
         running = True
         while running:
@@ -126,12 +132,8 @@ class GUI:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
-                else:
-                    result = menu.handle_event(event)
-                    if result == "Human Mode":
-                        return
-                    elif result == "Exit":
-                        pygame.quit()
+                elif result in menu_items:
+                    return menu.handle_event(event)
 
             self.screen.fill((0, 0, 0))
             self.screen.blit(pygame.transform.scale(menu.background_image, (self.width, self.height)), (0, 0))
