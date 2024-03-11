@@ -2,7 +2,7 @@ import pygame
 
 from sound import Sound
 from menu import Menu
-from bot import Bot, BotMode, RandomMode
+from bot import Bot, RandomBot
 
 
 class GUI:
@@ -61,6 +61,17 @@ class GUI:
         # cap fps
         self.fps = 60
 
+    def handleInput(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                x, y = pygame.mouse.get_pos()
+                row = (y - self.board_top_margin) // self.cell_size
+                col = (x - self.board_left_margin) // self.cell_size
+                self.game.toggle_cell(row, col)
+        return True
+
     def run(self):
 
         Sound.playBackgroundTheme()
@@ -69,8 +80,7 @@ class GUI:
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
         mode = self.drawMenu(menu_items)
         if mode == "Computer Mode":
-            bot = Bot(RandomMode())
-            self.game.setComputerMode()
+            self.game.setComputerMode(RandomBot(self.game))
         elif mode == "Exit":
             pygame.quit()
 
@@ -78,15 +88,11 @@ class GUI:
         while running:
             self.game.updateLogic()
 
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    x, y = pygame.mouse.get_pos()
-                    row = (y - self.board_top_margin) // self.cell_size
-                    col = (x - self.board_left_margin) // self.cell_size
-                    self.game.toggle_cell(row, col)
+            if self.game.isComputerMode:
+                self.game.bot.make_move() 
+            else:
+                # Handle inputs if the game is on human mode 
+                running = self.handleInput()
 
             # reset display to all black (prevents ghosting)
             self.screen.fill((0, 0, 0))
@@ -132,8 +138,10 @@ class GUI:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
-                elif result in menu_items:
-                    return menu.handle_event(event)
+                else:
+                    result = menu.handle_event(event)
+                    if result is not None:
+                        return menu.handle_event(event)
 
             self.screen.fill((0, 0, 0))
             self.screen.blit(pygame.transform.scale(menu.background_image, (self.width, self.height)), (0, 0))
@@ -220,9 +228,9 @@ class GUI:
         info_panel_surface.blit(level_surface, (15, 40))
 
         # Current shuffle level
-        shuffle_qnt_text = f"{self.game.shuffle_level:03}"
-        shuffle_qnt_surface = self.info_board_font.render(shuffle_qnt_text, True, pygame.Color("yellow"))
-        info_panel_surface.blit(shuffle_qnt_surface, (115, 40))
+        shuffles_applied_txt = f"{self.game.shuffles_applied:03}"
+        shuffles_applied_surface = self.info_board_font.render(shuffles_applied_txt, True, pygame.Color("yellow"))
+        info_panel_surface.blit(shuffles_applied_surface, (115, 40))
 
         # Current number of moves
         moves_text = f"{self.game.move_count:05}"

@@ -10,9 +10,13 @@ import threading
 class Game:
 
     def __init__(self, board_size):
+        self.isComputerMode = False
+        self.bot = None
         self.level_active = False
+        self.is_moving = False
         self.is_shuffling = False
         self.shuffle_level = 30 # don't quite know how this evolves tbh
+        self.shuffles_applied = 0
         self.board = Board(board_size)
         self.move_count = 0
         self.level = 1
@@ -28,6 +32,10 @@ class Game:
 
     def setGUI(self, gui: GUI):
         self.gui = gui
+
+    def setComputerMode(self, bot):
+        self.bot = bot
+        self.isComputerMode = True
 
     # utilitary functions
     def isLeftSideArrow(self, row, col):
@@ -52,7 +60,9 @@ class Game:
                 self.isBottomSideArrow(row, col)
 
     def toggle_cell(self, row, col):
-        if not self.level_active: # don't allow making moves before the level has started
+        # don't allow making moves before the level has started
+        # or if the game is not on human mode
+        if not self.level_active or self.isComputerMode: 
             return
         if self.isArrowClick(row, col):
             Sound.playMoveSound()
@@ -92,6 +102,8 @@ class Game:
         self.level_active = False
         self.is_timing = False
         self.level_beat_time = self.currentLevelTime()
+        self.shuffles_applied = 0
+        self.shuffle_level += 5 # just adding 5 for now
         self.move_count = 0
         self.level += 1
         Sound.playWinMusic()
@@ -127,6 +139,7 @@ class Game:
                 self.make_move(index, 0)
             elif direction == 4:
                 self.make_move(index, 10)
+            self.shuffles_applied += 1
             Sound.playMoveSound()
             pygame.time.delay(100)
 
