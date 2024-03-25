@@ -3,6 +3,7 @@ import pygame
 from sound import Sound
 from menu import Menu
 from bot import Bot, RandomBot, ListBot
+from algorithms.uniform_cost import UniformCost
 
 
 class GUI:
@@ -80,7 +81,7 @@ class GUI:
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
         mode = self.drawMenu(menu_items)
         if mode == "Computer Mode":
-            self.game.setComputerMode(ListBot(self.game))
+            self.game.setComputerMode(UniformCost(self.game))
         elif mode == "Exit":
             pygame.quit()
 

@@ -47,3 +47,17 @@ class Board:
             board_str += str(row) + "\n"
         return board_str
 
+    
+
+    def __lt__(self, other):
+        return (len(self.board) < len(other.board))
+    
+    def __eq__(self, other):
+        for row in range (len(self.board)):
+            for col in range (len(self.board)):
+                if (self.board[row][col] != other.board[row][col]):
+                    return False
+        return True
+
+
+

@@ -5,6 +5,7 @@ from GUI import GUI
 import random
 import pygame
 import threading
+import copy
 
 
 class Game:
@@ -326,4 +327,44 @@ class Game:
         elif self.isBottomSideArrow(row, col):
             self.board.rotateColumnUp(col - 1)
             self.board.rotateColumnUp(adj)
+
+    def __lt__(self, other):
+        return (self.board < other.board)
+    
+        
+    def valid_moves(self):
+        valid_moves = set()
+        for i in range (0, 15):
+            for j in range (0, 15):
+                gamecopy = self.deep_copy_game()
+                if gamecopy.isArrowClick(i, j):
+                    gamecopy.make_move(i,j)
+                    print(f"({i},{j})")
+                    valid_moves.add(gamecopy)
+        return valid_moves
+    
+    def deep_copy_game(self):
+        new_game = Game(len(self.board.board))  # Create a new Game instance with the same board size
+        
+        # Copy over attributes
+        new_game.isComputerMode = self.isComputerMode
+        new_game.bot = self.bot
+        new_game.level_active = self.level_active
+        new_game.is_moving = self.is_moving
+        new_game.is_shuffling = self.is_shuffling
+        new_game.shuffle_level = self.shuffle_level
+        new_game.shuffles_applied = self.shuffles_applied
+        new_game.move_count = self.move_count
+        new_game.level = self.level
+        new_game.is_timing = self.is_timing
+        new_game.level_start_time = self.level_start_time
+        new_game.level_beat_time = self.level_beat_time
+        new_game.MOVEMENT_RULE_QNT = self.MOVEMENT_RULE_QNT
+        new_game.secondary_arrow_layout = self.secondary_arrow_layout
+        new_game.secondary_layout_mov_rules = self.secondary_layout_mov_rules
+        
+        # Deep copy the board
+        new_game.board = copy.deepcopy(self.board)
+        
+        return new_game
 
