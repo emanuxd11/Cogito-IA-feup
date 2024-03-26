@@ -48,16 +48,13 @@ class UniformCost(Bot):
             if current.board.isWinningBoard():
                 break
             
-            # print(f"Valid Moves Size {len(self.valid_moves())}")
 
             valid_moves = current.valid_moves()
-
-            i = 0
 
             for next_node in valid_moves:
 
                 if (next_node.board == current.board):
-                    new_cost = cost_so_far[current] + 1000
+                    new_cost = float('inf')
 
                 else:
                     new_cost = cost_so_far[current] + 1
