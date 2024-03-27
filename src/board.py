@@ -60,4 +60,6 @@ class Board:
         return True
 
 
+    def __hash__(self):
+        return hash(tuple(map(tuple, self.board)))
 

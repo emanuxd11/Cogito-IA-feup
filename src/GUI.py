@@ -94,7 +94,7 @@ class GUI:
             self.game.updateLogic()
 
             if self.game.isComputerMode:
-                self.game.bot.make_move() 
+                self.game.bot.make_move()
             else:
                 # Handle inputs if the game is on human mode 
                 running = self.handleInput()
