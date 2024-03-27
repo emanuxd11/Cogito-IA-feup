@@ -83,7 +83,7 @@ class GUI:
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
         mode = self.drawMenu(menu_items)
         if mode == "Computer Mode":
-            self.game.setComputerMode(AStar(self.game, heuristic_count_pieces_outside))
+            self.game.setComputerMode(AStar(self.game, heuristic_sum_of_distances))
         elif mode == "Exit":
             pygame.quit()
 

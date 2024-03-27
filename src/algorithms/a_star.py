@@ -7,28 +7,34 @@ class AStar(Bot):
     def __init__(self, game, heuristic_func):
         super().__init__(game)
         self.heuristic_func = heuristic_func
+        self.board_sequence = []
 
     def make_move(self):
         if self.game.is_moving or not self.game.level_active:
             return
 
-        def move_caller(row, col):
+        def move_caller(newGame):
             self.game.is_moving = True
             pygame.time.delay(100)
-            self.game.make_move(row, col)
+            self.game = newGame
             Sound.playMoveSound()
             self.game.move_count += 1
             self.game.is_moving = False
-            print(f"[LOG] Bot Marley made move on row {row} and column {col}")
+            # print(f"[LOG] Bot Marley made move on row {row} and column {col}")
 
         came_from, cost_so_far = self.a_star()
 
-        print(came_from)
-        #current = self.game
-        #while current.board.board != self.game.board.objective:
-        #    current = came_from[current]
-        #    row, col = self.find_difference(current.board, self.game.board)
-        #    move_caller(row, col)
+        current = self.game
+        while current.board.board != self.game.board.objective:
+            self.board_sequence.append(current.board)
+            current = came_from[current]
+        
+        self.board_sequence.append(current.board)
+
+        self.board_sequence.reverse()
+
+        for game in self.board_sequence:
+            move_caller(game)
 
     def a_star(self):
         frontier = PriorityQueue()
@@ -37,7 +43,10 @@ class AStar(Bot):
         cost_so_far = {self.game: 0}
 
         while not frontier.empty():
+            print(int(frontier.qsize()))
             _, current = frontier.get()
+
+            print(current.board)
 
             if current.board.isWinningBoard():
                 break
@@ -45,6 +54,9 @@ class AStar(Bot):
             valid_moves = current.valid_moves()
             for next_node in valid_moves:
                 new_cost = cost_so_far[current] + 1
+
+                if (next_node.board == current.board):
+                    new_cost = float('inf')
 
                 if next_node not in cost_so_far or new_cost < cost_so_far[next_node]:
                     cost_so_far[next_node] = new_cost

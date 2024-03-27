@@ -11,7 +11,7 @@ def heuristic_sum_of_distances(board):
     total_distance = 0
     for row in range(len(board.board)):
         for col in range(len(board.board)):
-            if board.board[row][col] != board.board.objective[row][col]:
+            if board.board[row][col] != board.objective[row][col]:
                 # Calculate distance between current position and correct position
                 correct_row, correct_col = find_correct_position(board, row, col)
                 distance = abs(row - correct_row) + abs(col - correct_col)
@@ -19,9 +19,9 @@ def heuristic_sum_of_distances(board):
     return total_distance
 
 def find_correct_position(board, row, col):
-    for i in range(len(board)):
-        for j in range(len(board)):
-            if board.objective[i][j] == board[row][col]:
+    for i in range(len(board.board)):
+        for j in range(len(board.board)):
+            if board.objective[i][j] == board.board[row][col]:
                 return i, j
             
 def heuristic_sum_of_distances_to_center(board):
