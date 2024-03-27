@@ -4,10 +4,11 @@ from sound import Sound
 from collections import deque
 
 class Node:
-    def __init__(self, game, depth, parent=None):
+    def __init__(self, game, depth, parent=None, move=None):
         self.game = game
         self.depth = depth
         self.parent = parent
+        self.move = move
 
 class IterativeDeepening(Bot):
     def __init__(self, game):
@@ -29,7 +30,11 @@ class IterativeDeepening(Bot):
 
         came_from = self.iterative_deepening()
 
+        print(came_from)
+
         current = self.game
+
+        #ajustar isto
 
         while current.board.board != self.game.board.objective:
             self.board_sequence.append(current.board)
@@ -41,48 +46,14 @@ class IterativeDeepening(Bot):
 
         for game in self.board_sequence:
             move_caller(game)
-
-    # def iterative_deepening(self):
-    #     max_depth = 0
-    #     solution = []
-
-    #     while True:
-    #         if self.dfs(0, max_depth, solution):
-    #             return solution
             
-    #         max_depth += 1
-    #         solution = []
-
-    # def dfs(self, depth, max_depth, solution):
-    #     if depth > max_depth:
-    #         return False
-
-    #     frontier = []
-    #     frontier.append(self.game)
-
-    #     while frontier:
-    #         current = frontier.pop()
-
-    #         if current.board.isWinningBoard():
-    #             return True
-            
-    #         valid_moves = current.valid_moves()
-    #         for next_node in valid_moves:
-    #             solution.append(next_node)
-    #             if self.dfs(depth+1, max_depth, solution):
-    #                 return True
-    #             solution.pop()
-
-    #     return False
-            
-
     def iterative_deepening(self):
         max_depth = 0
 
         while True:
             solution = self.dfs(max_depth)
             if solution:
-                return solution #solution is the sequence of boards
+                return solution 
             
             max_depth += 1
 
@@ -97,17 +68,19 @@ class IterativeDeepening(Bot):
             current = frontier.pop()
 
             print(current.game.board)
+            print(current.move)
 
             if current.game.board.isWinningBoard():
-                return self.build_solution(current) #solution contains sequence of boards
+                return self.build_solution(current) 
             
             if current.depth > max_depth:
                 return False
             
             valid_moves = current.game.valid_moves()
             for next_node in valid_moves:
-                if next_node.board != current.game.board:
-                    node = Node(next_node, current.depth + 1, current)
+                game, move = next_node
+                if game.board != current.game.board:
+                    node = Node(game, current.depth + 1, current, move)
                     frontier.append(node)
                 
         return False
@@ -116,7 +89,7 @@ class IterativeDeepening(Bot):
         solution = []
 
         while node.parent is not None:
-            solution.append(node)
+            solution.append(node.move)
 
             node = node.parent
 
