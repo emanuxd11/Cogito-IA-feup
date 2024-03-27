@@ -82,10 +82,14 @@ class GUI:
 
         # Show the menu before starting the game
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
+        bot_menu = ["A* Algorithm", "Iterative Deepening"]
         mode = self.drawMenu(menu_items)
         if mode == "Computer Mode":
-            #self.game.setComputerMode(AStar(self.game, heuristic_sum_of_distances))
-            self.game.setComputerMode(IterativeDeepening(self.game))
+            bot_mode = self.drawMenu(bot_menu)
+            if bot_mode == "A* Algorithm":
+                self.game.setComputerMode(AStar(self.game, heuristic_sum_of_distances))
+            elif bot_mode == "Iterative Deepening":
+                self.game.setComputerMode(IterativeDeepening(self.game))
         elif mode == "Exit":
             pygame.quit()
 
