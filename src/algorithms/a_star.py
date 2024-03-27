@@ -10,31 +10,38 @@ class AStar(Bot):
         self.board_sequence = []
 
     def make_move(self):
+
         if self.game.is_moving or not self.game.level_active:
             return
+                
 
         def move_caller(newGame):
             self.game.is_moving = True
             pygame.time.delay(100)
-            self.game = newGame
+            self.game.board = newGame.board
             Sound.playMoveSound()
             self.game.move_count += 1
             self.game.is_moving = False
-            # print(f"[LOG] Bot Marley made move on row {row} and column {col}")
+            print(f"[LOG] Bot Marley made move on row -1 and column -1")
 
-        came_from, cost_so_far = self.a_star()
+        came_from, _ = self.a_star()
 
         current = self.game
-        while current.board.board != self.game.board.objective:
-            self.board_sequence.append(current.board)
-            current = came_from[current]
+        i = 0
+        while current.board.board != self.game.board.board:
+            print(f"Working {i}")
+            i += 1
+            self.board_sequence.append(current)
+            current = came_from[current.board]
         
-        self.board_sequence.append(current.board)
+        self.board_sequence.append(current)
 
         self.board_sequence.reverse()
 
         for game in self.board_sequence:
             move_caller(game)
+
+        return
 
     def a_star(self):
         frontier = PriorityQueue()
@@ -62,7 +69,7 @@ class AStar(Bot):
                     cost_so_far[next_node] = new_cost
                     priority = new_cost + self.heuristic_func(next_node.board)
                     frontier.put((priority, next_node))
-                    came_from[next_node] = current
+                    came_from[next_node.board] = current
 
         return came_from, cost_so_far
 
