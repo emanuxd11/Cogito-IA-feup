@@ -25,6 +25,7 @@ class AStar(Bot):
         came_from, cost_so_far = self.a_star()
 
         current = self.game
+
         while current.board.board != self.game.board.objective:
             self.board_sequence.append(current.board)
             current = came_from[current]
