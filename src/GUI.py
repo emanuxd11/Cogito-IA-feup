@@ -6,6 +6,7 @@ from bot import Bot, RandomBot, ListBot
 from algorithms.uniform_cost import UniformCost
 from algorithms.a_star import AStar
 from algorithms.heuristics.n_pieces import heuristic_count_pieces_outside, heuristic_sum_of_distances
+from algorithms.iterative_deepening import IterativeDeepening
 
 
 class GUI:
@@ -83,7 +84,8 @@ class GUI:
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
         mode = self.drawMenu(menu_items)
         if mode == "Computer Mode":
-            self.game.setComputerMode(AStar(self.game, heuristic_sum_of_distances))
+            #self.game.setComputerMode(AStar(self.game, heuristic_sum_of_distances))
+            self.game.setComputerMode(IterativeDeepening(self.game))
         elif mode == "Exit":
             pygame.quit()
 
