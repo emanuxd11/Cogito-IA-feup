@@ -339,7 +339,8 @@ class Game:
                 gamecopy = self.deep_copy_game()
                 if gamecopy.isArrowClick(i, j):
                     gamecopy.make_move(i,j)
-                    valid_moves.add(gamecopy)
+                    move = (i,j)
+                    valid_moves.add((gamecopy, move))
         return valid_moves
     
     def deep_copy_game(self):
