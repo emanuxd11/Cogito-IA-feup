@@ -3,37 +3,46 @@ import pygame
 from sound import Sound
 from queue import PriorityQueue
 import threading
+from board import Board
 
 class AStar(Bot):
     def __init__(self, game, heuristic_func):
         super().__init__(game)
         self.heuristic_func = heuristic_func
         self.came_from = {}
+        self.move_sequence = []
 
     def make_move(self):
 
         if self.game.is_moving or not self.game.level_active:
             return
 
-        move_sequence = []
         if not self.came_from:
             self.came_from, _ = self.a_star()
-            print(self.came_from)
-            current_board = self.game
-            while not self.game.board.board == current_board.board.objective:
-                print(current_board.board)
-                next_board, move = self.came_from[current_board.board]
-                current_board = next_board
-                move_sequence.append(move)
-            move_sequence.reverse()
+            current_board = Board(9)
+            current_board.board = self.gamecopy.board.objective.copy()
+            while self.gamecopy.board.board != current_board.board:
+                print("--------------------------")
+                print(current_board)
+                next_board, move = self.came_from[current_board]
+                print(next_board.board)
+                print(move)
 
+                temp = Board(9)
+                temp.board = next_board.board.board.copy()
+                current_board = temp
+                self.move_sequence.append(move)
+            self.move_sequence.reverse()
+        
         def move_caller():
             self.game.is_moving = True
             pygame.time.delay(10)
-
-            if move_sequence:
-                row, col = move_sequence.pop(0)
+            print(self.move_sequence)
+            if self.move_sequence:
+                row, col = self.move_sequence[0]
+                self.move_sequence = self.move_sequence[1:]
                 self.game.make_move(row, col)
+                print(f"[LOG] Moved ({row}, {col})")
             else:
                 print("[LOG] No more moves in sequence")
 
@@ -43,7 +52,7 @@ class AStar(Bot):
 
         move_thread = threading.Thread(target=move_caller)
         move_thread.start()
-
+        
     def a_star(self):
         frontier = PriorityQueue()
         frontier.put((0, self.game))
@@ -66,6 +75,7 @@ class AStar(Bot):
 
                 if node_game.board == current.board:
                     new_cost = float('inf')  # Penalize revisiting same state
+                    
 
                 if node_game not in cost_so_far or new_cost < cost_so_far[node_game]:
                     cost_so_far[node_game] = new_cost
