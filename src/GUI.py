@@ -5,7 +5,8 @@ from menu import Menu
 from bot import Bot, RandomBot, ListBot
 from algorithms.uniform_cost import UniformCost
 from algorithms.a_star import AStar
-from algorithms.heuristics.n_pieces import heuristic_count_pieces_outside, heuristic_sum_of_distances
+from algorithms.greedy_search import GreedySearch
+from algorithms.heuristics.n_pieces import heuristic_count_pieces_outside, heuristic_sum_of_distances, heuristic_sum_of_distances_to_center
 from algorithms.iterative_deepening import IterativeDeepening
 
 
@@ -82,14 +83,25 @@ class GUI:
 
         # Show the menu before starting the game
         menu_items = ["Human Mode", "Computer Mode", "Exit"]
-        bot_menu = ["A* Algorithm", "Iterative Deepening"]
+        bot_menu = ["A* Algorithm", "Iterative Deepening", "Greedy Search"]
+        heuristic_menu = ["Sum of Distances", "Number of Pieces", "Distance to Center"]
         mode = self.drawMenu(menu_items)
         if mode == "Computer Mode":
             bot_mode = self.drawMenu(bot_menu)
+            if bot_mode == "A* Algorithm" or bot_mode == "Greedy Search":
+                heuristic_mode = self.drawMenu(heuristic_menu)
+                if heuristic_mode == "Sum of Distances":
+                    heuristic_function = heuristic_sum_of_distances
+                elif heuristic_mode == "Number of Pieces":
+                    heuristic_function = heuristic_count_pieces_outside
+                elif heuristic_mode == "Distance to Center":
+                    heuristic_function = heuristic_sum_of_distances_to_center
             if bot_mode == "A* Algorithm":
-                self.game.setComputerMode(AStar(self.game, heuristic_sum_of_distances))
+                self.game.setComputerMode(AStar(self.game, heuristic_function))
             elif bot_mode == "Iterative Deepening":
                 self.game.setComputerMode(IterativeDeepening(self.game))
+            elif bot_mode == "Greedy Search":
+                self.game.setComputerMode(GreedySearch(self.game, heuristic_function))
         elif mode == "Exit":
             pygame.quit()
 

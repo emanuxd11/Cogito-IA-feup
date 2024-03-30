@@ -334,8 +334,8 @@ class Game:
         
     def valid_moves(self):
         valid_moves = set()
-        for i in range (0, 15):
-            for j in range (0, 15):
+        for i in range (0, 11):
+            for j in range (0, 11):
                 gamecopy = self.deep_copy_game()
                 if gamecopy.isArrowClick(i, j):
                     gamecopy.make_move(i,j)

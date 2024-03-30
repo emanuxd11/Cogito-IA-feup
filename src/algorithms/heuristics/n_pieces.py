@@ -26,13 +26,13 @@ def find_correct_position(board, row, col):
             
 def heuristic_sum_of_distances_to_center(board):
     total_distance = 0
-    board_size = len(board)
+    board_size = len(board.board)
     center_row = board_size // 2
     center_col = board_size // 2
 
     for row in range(board_size):
         for col in range(board_size):
-            if board[row][col] != board.objective[row][col]:
+            if board.board[row][col] != board.objective[row][col]:
                 distance = abs(row - center_row) + abs(col - center_col)
                 total_distance += distance
     return total_distance
