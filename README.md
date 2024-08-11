@@ -1,3 +1,8 @@
+![img1](docs/scr1.png)
+![img2](docs/scr2.png)
+![img3](docs/scr3.png)
+
+
 # Regras do Jogo
 > Existem 12 regras de movimentação diferentes. Ao fim do nível 12, o jogo volta à regra inicial (em que cada movimento corresponde a apenas ao movimento realmente efetuado), mas aumenta a dificuldade alterando o objetivo da board.
 
