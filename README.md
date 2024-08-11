@@ -1,6 +1,6 @@
+![img3](docs/scr3.png)
 ![img1](docs/scr1.png)
 ![img2](docs/scr2.png)
-![img3](docs/scr3.png)
 
 
 # Regras do Jogo
